@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(gh auth *)",
-      "Bash(sudo apt-get *)",
-      "Bash(gh *)"
-    ]
-  }
-}

@@ -1,4 +1,4 @@
-# V2V BSM OFDM — ADALM-PLUTO SDR
+# V2V BSM OFDM - ADALM-PLUTO SDR
 
 **Authors:** Avery Matherne, Jason Phan
 
@@ -8,7 +8,7 @@ A vehicle-to-vehicle (V2V) basic safety message (BSM) transmission system implem
 
 ## Overview
 
-The transmitter constructs two BSM packets — one per vehicle — encodes each with a rate-1/2 convolutional code, maps them onto BPSK-OFDM, prepends an RRC-shaped preamble and a known training sequence for synchronization, and transmits both consecutively. The receiver detects each packet via cross-correlation, sweeps for sample-clock offset, estimates and corrects carrier frequency offset (CFO), fits and removes residual linear phase using the training sequence, applies a decision-directed PLL for fine phase lock, equalizes the OFDM subcarriers with MMSE, and decodes via Viterbi to recover the original BSM fields. Decoded kinematics from both vehicles are used to compute time-to-collision (TTC) and issue a brake warning.
+The transmitter constructs two BSM packets - one per vehicle - encodes each with a rate-1/2 convolutional code, maps them onto BPSK-OFDM, prepends an RRC-shaped preamble and a known training sequence for synchronization, and transmits both consecutively. The receiver detects each packet via cross-correlation, sweeps for sample-clock offset, estimates and corrects carrier frequency offset (CFO), fits and removes residual linear phase using the training sequence, applies a decision-directed PLL for fine phase lock, equalizes the OFDM subcarriers with MMSE, and decodes via Viterbi to recover the original BSM fields. Decoded kinematics from both vehicles are used to compute time-to-collision (TTC) and issue a brake warning.
 
 ---
 
@@ -63,7 +63,7 @@ Bits are packed MSB-first. The decoder (`decodeBSMfromBits`) is the exact invers
 
 ### Forward Error Correction
 
-A K=7, rate-1/2 convolutional code with generator polynomials `[171, 133]` (octal) — the standard 802.11 FEC — is applied to the 80-bit BSM payload. This doubles the bit count to 160 coded bits. Decoding uses Viterbi with hard decisions and a traceback depth of 35.
+A K=7, rate-1/2 convolutional code with generator polynomials `[171, 133]` (octal) - the standard 802.11 FEC - is applied to the 80-bit BSM payload. This doubles the bit count to 160 coded bits. Decoding uses Viterbi with hard decisions and a traceback depth of 35.
 
 ### OFDM Modulation (802.11p PHY)
 
@@ -80,13 +80,13 @@ A K=7, rate-1/2 convolutional code with generator polynomials `[171, 133]` (octa
 
 A separate OFDM preamble symbol (seed 43, known BPSK data) precedes the data OFDM symbols for channel estimation.
 
-### RRC Preamble (PRE) — Timing Detection
+### RRC Preamble (PRE) - Timing Detection
 
 A 63-symbol BPSK sequence (seeded with `rng(42)`) is RRC pulse-shaped with rolloff=0.35, sps=16 (samples per symbol), and span=6. The receiver cross-correlates the raw received signal against the known shaped preamble to detect packet boundaries. Peak positions above a threshold of 2× the median correlation floor are accepted. The receiver also predicts additional candidate peaks at ±N_pkt and ±2·N_pkt offsets from each found peak to recover packets missed by `findpeaks`.
 
 A tau-sweep over all 0–15 sample offsets resolves sub-sample timing ambiguity by maximizing correlation energy against the known preamble symbols at the matched-filter output.
 
-### TRAIN Sequence — Linear Phase and Polarity Correction
+### TRAIN Sequence - Linear Phase and Polarity Correction
 
 A 256-symbol known BPSK sequence (same RRC shaping) follows the PRE. After CFO removal, the receiver extracts the training symbols, normalizes their RMS, and computes the channel response `H = rx .* conj(ref)`. The unwrapped phase of H is fit to a line via `polyfit` to estimate and remove residual linear phase (a second-order CFO residual). The sign of the projection onto the reference determines and corrects a ±1 polarity ambiguity. The fitted rotation is then extended over the remainder of the receive buffer.
 

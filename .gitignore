@@ -1,0 +1,29 @@
+# MATLAB
+*.asv
+*.m~
+*.mat
+*.fig
+*.mlx
+*.mlapp
+*.mltbx
+*.prj
+*.slx
+*.slxc
+*.slxp
+*.mdl
+*.bak
+*.log
+slprj/
+matlab_crash_dump.*
+codegen/
+
+# Generated figures
+V2V_figures/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Windows
+*.lnk
